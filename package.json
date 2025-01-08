@@ -10,7 +10,6 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2",
     "uuid": "^11.0.4",
-    "webtorrent": "^2.5.12",
     "ws": "^8.18.0"
   },
   "scripts": {
