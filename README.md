@@ -30,7 +30,7 @@ Users can share files by dragging and dropping them onto the FilePizza site, or 
 
 This project is deployed on Railway and can be accessed via the following domain:
 
-- **Production URL**: [https://p2p.shouttocode.com](https://p2p.shouttocode.com)
+- **Production URL**: [https://packetpanda.shouttocode.com](https://packetpanda.shouttocode.com)
 
 ## Contribution
 
