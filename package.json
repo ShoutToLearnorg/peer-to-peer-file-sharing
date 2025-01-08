@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "peer": "^1.0.2",
+    "peerjs": "^1.5.4",
+    "simple-peer": "^9.11.1",
+    "socket.io": "^4.8.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2",
+    "uuid": "^11.0.4",
+    "webtorrent": "^2.5.12",
+    "ws": "^8.18.0"
+  },
+  "scripts": {
+    "start": "ts-node-dev index.ts"
+  },
+  "name": "peer-to-peer-file-sharing",
+  "version": "1.0.0",
+  "main": "server.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}

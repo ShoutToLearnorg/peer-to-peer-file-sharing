@@ -1,0 +1,12 @@
+body {
+    background-color: #f8f9fa;
+  }
+  #file-upload-area {
+    border: 2px dashed #007bff;
+    padding: 20px;
+    cursor: pointer;
+  }
+  #file-upload-area:hover {
+    background-color: #e9ecef;
+  }
+  

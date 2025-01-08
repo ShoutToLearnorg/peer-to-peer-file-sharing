@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPacket - P2P File Receiver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script> <!-- JSZip for creating ZIP -->
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+
+    
+</head>
+
+<body class="text-white font-sans flex flex-col min-h-screen">
+    <header>
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl font-bold">PenguinPacket</h1>
+            <p class="text-lg">Peer-to-Peer File Transfer</p>
+        </div>
+    </header>
+
+    <main class="w-full flex-grow flex justify-center items-center py-10">
+        <div class="max-w-3xl w-full bg-gray-800 p-8 rounded-lg shadow-xl">
+            <div class="text-center space-y-6">
+                <h2 class="text-2xl font-semibold text-blue-400">Receiving Files</h2>
+
+                <div id="fileListSection" class="w-full  rounded-md shadow-sm">
+                    <div class="w-full border-b border-stone-300 dark:border-stone-700 last:border-0">
+                        <p id="fileList" class="space-y-4 text-left">
+                            <!-- File list items will go here -->
+                        </p>
+                    </div>
+                </div>
+                
+
+                <div id="statusWrapper" class="mb-6">
+                    <p id="statusText" class="text-gray-400">Initializing...</p>
+                </div>
+
+                <div id="loadingSpinner" class="mt-6 hidden text-2xl text-gray-400">
+                    <i class="fas fa-spinner fa-spin"></i> Receiving Files...
+                </div>
+
+                <div class="flex justify-center space-x-4 mt-6">
+                    <button id="downloadBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md cursor-pointer hidden transition-all duration-300 ease-in-out transform hover:scale-105">
+                        Download All as ZIP
+                    </button>
+                
+                    <button id="downloadSingleFileBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md cursor-pointer hidden transition-all duration-300 ease-in-out transform hover:scale-105">
+                        Download File
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-6 mt-8">
+        <p class="text-gray-600 text-sm">
+            Made with ❤️ by 
+            <a href="https://www.linkedin.com/in/text-ashish/" target="_blank" class="text-blue-500 font-medium hover:underline">
+                Ashish Srivastava
+            </a>@PandaPackets
+        </p>
+    </footer>
+
+    <script src="js/download.js"></script>
+
+</body>
+
+</html>
