@@ -11,9 +11,12 @@ PacketPanda is a free, open-source web service that allows users to share files 
 
 ## Project Overview
 
-The application is divided into two main parts:
-- **Sender Page**: A page where the user can select a file and share it with another peer.
-- **Receiver Page**: A page where the user can receive the shared file from a peer.
+Users can share files by dragging and dropping them onto the FilePizza site, or by selecting a file. The site then generates a unique URL that can be shared with recipients. When recipients click the link, their browser connects directly to the sender's browser to download the file.
+
+- Your file is not gonna stored anywhere on the server
+- Works across platforms
+- No file size limits
+- No need to create an account
 
 ### Technologies Used
 
