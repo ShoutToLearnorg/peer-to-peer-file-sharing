@@ -32,29 +32,9 @@ This project is deployed on Railway and can be accessed via the following domain
 
 - **Production URL**: [https://p2p.shouttocode.com](https://p2p.shouttocode.com)
 
-## Usage
-
-### Sending Files:
-
-1. On the **sender page**, select a file to send.
-2. The sender will generate a unique token and share the file with the specified peer using that token.
-
-### Receiving Files:
-
-1. On the **receiver page**, enter the received token to connect with the sender.
-2. Once connected, the receiver will receive the file shared by the sender.
-
 ## Contribution
 
 We welcome contributions to improve this project. Feel free to fork this repository, open issues, and submit pull requests.
-
-### Steps to Contribute
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes and commit them (`git commit -m 'Add new feature'`).
-4. Push to your forked repository (`git push origin feature-branch`).
-5. Open a pull request with a description of the changes.
 
 ## License
 
