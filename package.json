@@ -13,7 +13,7 @@
     "ws": "^8.18.0"
   },
   "scripts": {
-    "start": "ts-node-dev index.ts"
+    "start": "node server.js"
   },
   "name": "peer-to-peer-file-sharing",
   "version": "1.0.0",
