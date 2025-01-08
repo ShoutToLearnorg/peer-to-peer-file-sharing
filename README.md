@@ -1,6 +1,6 @@
 # Peer-to-Peer File Sharing Application
 
-This project implements a peer-to-peer (P2P) file-sharing system using Node.js, Express, Socket.IO, and PeerJS. The application allows users to send and receive files in real-time using a secure and scalable WebRTC-based connection. The project is hosted on Railway and supports both development and production environments.
+PacketPanda is a free, open-source web service that allows users to share files directly between their browsers using peer-to-peer technology in real-time using a secure and scalable WebRTC-based connection. The PacketPanda is hosted on Railway and supports both development and production environments.
 
 ## Features
 
