@@ -1,4 +1,4 @@
-# Peer-to-Peer File Sharing Application
+# PacketPanda A Peer-to-Peer File Sharing Application
 
 PacketPanda is a free, open-source web service that allows users to share files directly between their browsers using peer-to-peer technology in real-time using a secure and scalable WebRTC-based connection. The PacketPanda is hosted on Railway and supports both development and production environments.
 
