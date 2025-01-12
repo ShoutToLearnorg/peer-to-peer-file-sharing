@@ -1,4 +1,4 @@
-  
+
         const fileInput = document.getElementById('dropzone-file');
         const fileInputSection = document.getElementById('fileInputSection');
         const fileListSection = document.getElementById('fileListSection');
@@ -101,67 +101,55 @@
             });
 
             peer.on('connection', (connection) => {
-    conn = connection;
-    console.log("Receiver connected. Preparing to send files...");
+                conn = connection;
+                console.log("Receiver connected. Preparing to send files...");
 
-    conn.on('open', () => {
-        console.log("Connection open. Sending file metadata...");
-        files.forEach((file, index) => {
-            const totalChunks = Math.ceil(file.size / CHUNK_SIZE); // Calculate total chunks
-            conn.send({
-                fileName: file.name,
-                fileType: file.type,
-                fileSize: file.size,
-                totalChunks: totalChunks, // Include total chunk count
+                conn.on('open', () => {
+                    console.log("Connection open. Sending file metadata...");
+                    files.forEach((file, index) => {
+                        conn.send({ fileName: file.name, fileType: file.type, fileSize: file.size });
+                        console.log("Sending file:", file.name);
+                        sendFileInChunks(file, index);  // Send file chunks
+                    });
+
+                    statusText.textContent = "All files sent successfully!";
+                    console.log("All files sent:", files.map(file => file.name));
+                });
+
+                conn.on('error', (err) => {
+                    console.error("Error during file transfer:", err);
+                    statusText.textContent = "Error during file transfer.";
+                });
             });
-            console.log(`Sending file metadata: ${file.name}, Total Chunks: ${totalChunks}`);
-            sendFileInChunks(file, index); // Send file chunks
         });
 
-        statusText.textContent = "All files sent successfully!";
-        console.log("All files sent:", files.map(file => file.name));
-    });
+        function sendFileInChunks(file, index) {
+            const reader = new FileReader();
+            let start = 0;
+            let end = CHUNK_SIZE;
+            let chunkIndex = 0;
 
-    conn.on('error', (err) => {
-        console.error("Error during file transfer:", err);
-        statusText.textContent = "Error during file transfer.";
-    });
-});
-});
+            reader.onload = (event) => {
+                const chunk = event.target.result;
+                conn.send({ fileIndex: index, chunkIndex: chunkIndex, chunk: chunk });
 
-function sendFileInChunks(file, index) {
-    const reader = new FileReader();
-    let start = 0;
-    let end = CHUNK_SIZE;
-    let chunkIndex = 0;
+                console.log(`Sending chunk ${chunkIndex + 1} of file: ${file.name}`);
 
-    reader.onload = (event) => {
-        const chunk = event.target.result;
-        conn.send({
-            fileIndex: index,
-            chunkIndex: chunkIndex,
-            chunk: chunk,
-            isLastChunk: end >= file.size, // Mark the last chunk
-        });
+                start = end;
+                end = start + CHUNK_SIZE;
 
-        console.log(`Sending chunk ${chunkIndex + 1} of ${file.name}`);
+                if (start < file.size) {
+                    chunkIndex++;
+                    reader.readAsArrayBuffer(file.slice(start, end));
+                } else {
+                    // Notify receiver about EOF for this file
+                    conn.send({ fileIndex: index, chunkIndex: -1 });
+                    console.log(`Finished sending file: ${file.name}`);
+                }
+            };
 
-        start = end;
-        end = start + CHUNK_SIZE;
-
-        if (start < file.size) {
-            chunkIndex++;
             reader.readAsArrayBuffer(file.slice(start, end));
-        } else {
-            // Notify receiver about EOF for this file
-            conn.send({ fileIndex: index, chunkIndex: -1, isLastChunk: true });
-            console.log(`Finished sending file: ${file.name}`);
         }
-    };
-
-    reader.readAsArrayBuffer(file.slice(start, end));
-}
-
 
 
         document.querySelector('[data-copy-to-clipboard-target]').addEventListener('click', () => {
