@@ -3,30 +3,24 @@ const http = require('http');
 const socketIo = require('socket.io');
 const Peer = require('peer');
 const app = express();
+
+// Create the main HTTP server for Socket.IO
 const server = http.createServer(app);
 
-// Create socket.io instance with CORS and transports configuration
+// Setup Socket.IO with the necessary CORS configuration
 const io = socketIo(server, {
-    transports: ['websocket', 'polling'], // Allow both websocket and polling
+    transports: ['websocket', 'polling'],
     cors: {
-        origin: '*', // Allow all origins (you can set this to your frontend URL if needed)
+        origin: '*', // Allow all origins (change as needed)
         methods: ['GET', 'POST'],
     }
 });
 
-// Serve static files (e.g., sender.html, receiver.html)
-app.use(express.static('public'));
-
 // Mock database to store peerId and tokens
 let tokens = {};
 
-// Endpoint to initialize PeerJS server
-const peerServer = Peer.ExpressPeerServer(server, {
-    path: '/peerjs',
-});
-
-// Attach PeerJS server to the Express app
-app.use('/peerjs', peerServer);
+// Serve static files (sender.html, receiver.html)
+app.use(express.static('public'));
 
 // Handle socket connection and token management
 io.on('connection', (socket) => {
@@ -56,9 +50,21 @@ io.on('connection', (socket) => {
     });
 });
 
+// Create a new HTTP server for PeerJS
+const peerServerHttp = http.createServer();
+const peerServer = Peer.ExpressPeerServer(peerServerHttp, { path: '/peerjs' });
+
+// Make sure to listen on all network interfaces (0.0.0.0) for external access
+peerServerHttp.on('request', (req, res) => peerServer(req, res));
+
+// Listen on external IP or domain and make it accessible
+peerServerHttp.listen(9000, '0.0.0.0', () => {
+    console.log('PeerJS server running on port 9000');
+});
+
+
 // Serve the application on port 3000
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Socket.IO server running on port ${PORT}`);
 });
-
