@@ -129,30 +129,30 @@ const fileList = document.getElementById('fileList');
                         });
     
                         const fileContainer = document.createElement('div');
-                        fileContainer.className = 'flex flex-col p-3 bg-gray-700 rounded-lg mb-4';
-    
-                        const headerDiv = document.createElement('div');
-                        headerDiv.className = 'flex justify-between items-center';
-    
-                        const fileNameDiv = document.createElement('div');
-                        fileNameDiv.className = 'text-sm font-medium text-stone-200';
-                        fileNameDiv.textContent = `${data.fileName}`;
-                        
-                        const fileTypeDiv = document.createElement('div');
-                        fileTypeDiv.className = 'text-xs px-2 py-1 text-stone-800 bg-stone-200 rounded-md ml-4';
-                        fileTypeDiv.textContent = data.fileType;
-    
-                        headerDiv.appendChild(fileNameDiv);
-                        headerDiv.appendChild(fileTypeDiv);
-    
-                        const fileSizeDiv = document.createElement('div');
-                        fileSizeDiv.className = 'text-xs text-gray-400 mt-1';
-                        fileSizeDiv.textContent = `Size: ${(data.fileSize / (1024 * 1024)).toFixed(2)} MB`;
-    
-                        const chunkCountDiv = document.createElement('div');
-                        chunkCountDiv.className = 'text-xs text-gray-400 mt-1';
-                        chunkCountDiv.id = `chunkCount-${files.length - 1}`;
-                        chunkCountDiv.textContent = `Chunks: 0/${data.totalChunks}`;
+fileContainer.className = 'flex flex-col p-4 border border-white rounded-lg bg-[#2a2a2a] rounded-lg mb-4';
+
+const headerDiv = document.createElement('div');
+headerDiv.className = 'flex justify-between items-center';
+
+const fileNameDiv = document.createElement('div');
+fileNameDiv.className = 'text-sm text-white opacity-80';
+fileNameDiv.textContent = `${data.fileName}`;
+
+const fileTypeDiv = document.createElement('div');
+fileTypeDiv.className = 'text-xs px-2 py-1 text-stone-800 bg-stone-200 rounded-md ml-4';
+fileTypeDiv.textContent = data.fileType;
+
+headerDiv.appendChild(fileNameDiv);
+headerDiv.appendChild(fileTypeDiv);
+
+const fileSizeDiv = document.createElement('div');
+fileSizeDiv.className = 'text-xs text-white opacity-50 mt-2';
+fileSizeDiv.textContent = `Size: ${(data.fileSize / (1024 * 1024)).toFixed(2)} MB`;
+
+const chunkCountDiv = document.createElement('div');
+chunkCountDiv.className = 'text-xs text-white opacity-50 mt-1';
+chunkCountDiv.id = `chunkCount-${files.length - 1}`;
+chunkCountDiv.textContent = `Chunks: 0/${data.totalChunks}`;
     
                         fileContainer.appendChild(headerDiv);
                         fileContainer.appendChild(fileSizeDiv);

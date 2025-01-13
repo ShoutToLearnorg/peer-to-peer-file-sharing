@@ -7,50 +7,56 @@
     <title>PacketPanda - P2P File Receiver</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script> <!-- JSZip for creating ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-
-    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
 
-<body class="text-white font-sans flex flex-col min-h-screen">
-    <header>
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl font-bold">PacketPanda</h1>
-            <p class="text-lg">Peer-to-Peer File Transfer</p>
-        </div>
-    </header>
+<body class="bg-[#1a1a1a] text-white font-sans flex flex-col min-h-screen">
 
-    <main class="w-full flex-grow flex justify-center items-center py-10">
-        <div class="max-w-3xl w-full bg-gray-800 p-8 rounded-lg shadow-xl">
+
+    <!-- Beautiful Dummy Image (Symbol of the website) -->
+    <div class="flex justify-center mt-8 mb-8">
+        <img src="/images/receiving file panda.png" alt="Website Symbol" class="w-82 h-82 max-w-[300px] " />
+    </div>
+    </div>
+    <h1 class="text-3xl font-bold text-black">PacketPanda</h1>
+    <p class="text-sm mt-1 text-black opacity-60">Peer-to-Peer File Transfer</p>
+
+    <main class="w-full flex-grow flex justify-center items-center py-10 px-4">
+        <div class="max-w-3xl w-full bg-[#232323] p-8 rounded-lg">
             <div class="text-center space-y-6">
-                <h2 class="text-2xl font-semibold text-blue-400">Receiving Files</h2>
+                <h2 class="text-lg font-normal text-white">Receiving Files</h2>
 
-                <div id="fileListSection" class="w-full  rounded-md shadow-sm">
-                    <div class="w-full border-b border-stone-300 dark:border-stone-700 last:border-0">
-                        <p id="fileList" class="space-y-4 text-left">
+                <div id="fileListSection" class="w-full bg-[#2a2a2a] rounded-lg">
+                    <div class="w-full border-b border-[#333333]">
+                        <p id="fileList" class="space-y-4 text-left p-4 text-white opacity-80">
                             <!-- File list items will go here -->
                         </p>
                     </div>
                 </div>
-                
 
                 <div id="statusWrapper" class="mb-6">
-                    <p id="statusText" class="text-gray-400">Initializing...</p>
+                    <p id="statusText" class="text-white opacity-60 text-sm">Initializing...</p>
                 </div>
 
-
                 <div class="flex justify-center space-x-4 mt-6">
-                    <button id="downloadBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md cursor-pointer hidden transition-all duration-300 ease-in-out transform hover:scale-105">
+                    <button id="downloadBtn" class="bg-white text-[#1a1a1a] text-sm py-2 px-6 rounded-lg cursor-pointer hidden hover:opacity-90 transition-all duration-200">
                         Download All as ZIP
                     </button>
                 
-                    <button id="downloadSingleFileBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md cursor-pointer hidden transition-all duration-300 ease-in-out transform hover:scale-105">
+                    <button id="downloadSingleFileBtn" class="bg-white text-[#1a1a1a] text-sm py-2 px-6 rounded-lg cursor-pointer hidden hover:opacity-90 transition-all duration-200">
                         Download File
                     </button>
                 </div>
-                
             </div>
         </div>
     </main>
@@ -65,8 +71,6 @@
     </footer>
 
     <script src="/js/download.js"></script>
-    
-
 </body>
 
 </html>
