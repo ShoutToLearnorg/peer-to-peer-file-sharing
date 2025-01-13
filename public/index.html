@@ -48,18 +48,18 @@
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "PacketPanda",
-            "url": "https://yourdomain.com",
+            "url": "https://PacketPanda.shouttocode.com",
             "description": "PacketPanda is a secure peer-to-peer file sharing platform that allows users to send large files quickly and securely.",
             "publisher": {
               "@type": "Organization",
               "name": "PacketPanda",
-              "logo": "https://yourdomain.com/images/PacketPanda.png",
-              "url": "https://yourdomain.com"
+              "logo": "https://PacketPanda.shouttocode.com/images/PacketPanda.png",
+              "url": "https://PacketPanda.shouttocode.com"
             },
             "mainEntityOfPage": {
               "@type": "CreativeWork",
               "name": "File Transfer",
-              "url": "https://yourdomain.com/upload",
+              "url": "https://PacketPanda.shouttocode.com",
               "about": {
                 "@type": "Thing",
                 "name": "File Sharing"
@@ -74,19 +74,15 @@
               {
                 "@type": "Action",
                 "name": "Upload File",
-                "target": "https://yourdomain.com/upload",
+                "target": "https://PacketPanda.shouttocode.com",
                 "query-input": "required name=file"
               },
               {
                 "@type": "DownloadAction",
                 "name": "Download File",
-                "target": "https://yourdomain.com/download?file_id={file_id}"
+                "target": "https://PacketPanda.shouttocode.com/receiver.html?file_id={file_id}"
               },
-              {
-                "@type": "ShareAction",
-                "name": "Share File",
-                "target": "https://yourdomain.com/share?file_id={file_id}"
-              }
+              
             ]
           }
           
