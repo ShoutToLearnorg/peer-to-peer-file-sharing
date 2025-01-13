@@ -4,14 +4,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PacketPanda - File Sender</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <title>PacketPanda - Secure P2P File Sharing Made Easy</title>
+
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="PacketPanda: A fast, secure, and reliable peer-to-peer file sharing platform. Share files of any size with ease. Try PacketPanda today!">
+    <meta name="keywords" content="P2P file sharing, peer-to-peer, file transfer, secure file sharing, PacketPanda, large file sharing">
+    <meta name="author" content="Ashish Srivastava">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="PacketPanda - Secure P2P File Sharing">
+    <meta property="og:description" content="PacketPanda: A fast, secure, and reliable peer-to-peer file sharing platform. Share files of any size with ease. Try PacketPanda today!">
+    <meta property="og:image" content="/images/openGraphImage.png">
+    <meta property="og:url" content="https://PacketPanda.shouttocode.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PacketPanda - Secure P2P File Sharing Made Easy">
+    <meta name="twitter:description" content="Fast, secure, and efficient peer-to-peer file sharing with PacketPanda.">
+    <meta name="twitter:image" content="/images/PacketPanda.png">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://PacketPanda.shouttocode.com">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon_io/favicon.ico" type="image/x-icon">
+
+    <!-- Preconnect and Stylesheets -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Tailwind CSS and External Scripts -->
+    <script src="https://cdn.tailwindcss.com" async></script>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" defer></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" defer></script>
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "PacketPanda",
+            "url": "https://yourdomain.com",
+            "description": "PacketPanda is a secure peer-to-peer file sharing platform that allows users to send large files quickly and securely.",
+            "publisher": {
+              "@type": "Organization",
+              "name": "PacketPanda",
+              "logo": "https://yourdomain.com/images/PacketPanda.png",
+              "url": "https://yourdomain.com"
+            },
+            "mainEntityOfPage": {
+              "@type": "CreativeWork",
+              "name": "File Transfer",
+              "url": "https://yourdomain.com/upload",
+              "about": {
+                "@type": "Thing",
+                "name": "File Sharing"
+              },
+              "description": "PacketPanda is a fast and secure P2P file sharing platform, enabling users to send and receive large files efficiently.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PacketPanda"
+              }
+            },
+            "potentialAction": [
+              {
+                "@type": "Action",
+                "name": "Upload File",
+                "target": "https://yourdomain.com/upload",
+                "query-input": "required name=file"
+              },
+              {
+                "@type": "DownloadAction",
+                "name": "Download File",
+                "target": "https://yourdomain.com/download?file_id={file_id}"
+              },
+              {
+                "@type": "ShareAction",
+                "name": "Share File",
+                "target": "https://yourdomain.com/share?file_id={file_id}"
+              }
+            ]
+          }
+          
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
