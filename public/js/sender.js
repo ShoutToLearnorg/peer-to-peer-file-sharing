@@ -24,6 +24,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 let peerId; // Define a global variable to store the Peer ID
 
+// Track total chunks sent and total chunks to send
+let totalChunksSent = 0;
+let totalChunksToSend = 0;
+
+let combinedProgressBar; // Reference to the combined progress bar
+
 function hideLoadingIndicator() {
     loadingSpinner.style.display = 'none';
     statusText.textContent = `Your Peer ID: ${peerId}`;
@@ -51,6 +57,11 @@ function initializePeer() {
 
         conn.on('open', () => {
             console.log("Connection open. Sending file metadata...");
+            
+            // Show the progress bar as soon as the transfer starts
+            showProgressBar();
+        
+            // Now send the file metadata and transfer chunks
             files.forEach((file, index) => {
                 const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
                 conn.send({
@@ -62,23 +73,16 @@ function initializePeer() {
                 console.log(`Sending file metadata: ${file.name}, Total Chunks: ${totalChunks}`);
                 sendFileInChunks(file, index);
             });
-
-            statusText.textContent = "All files sent successfully!";
+        
             console.log("All files sent:", files.map(file => file.name));
         });
+        
 
         conn.on('error', (err) => {
             console.error("Error during file transfer:", err);
             statusText.textContent = "Error during file transfer.";
         });
     });
-}
-
-function retryPeerInitialization() {
-    setTimeout(() => {
-        console.log('Retrying Peer connection...');
-        initializePeer();
-    }, 5000); // Retry every 5 seconds
 }
 
 fileInput.addEventListener('change', () => {
@@ -147,7 +151,7 @@ generateLinkBtn.addEventListener('click', async () => {
 
     socket.on('token-generated', (data) => {
         const token = data.token;
-        const link = `https://PacketPanda.shouttocode.com/receiver.html?token=${token}`;
+        const link = `https://packetpanda.shouttocode.com/receiver.html?token=${token}`;
         shareLinkInput.value = link;
 
         console.log("Shareable link generated:", link);
@@ -158,11 +162,32 @@ generateLinkBtn.addEventListener('click', async () => {
 });
 
 function sendFileInChunks(file, index) {
-    showLoadingIndicator(`Sending file: ${file.name}`);
     const reader = new FileReader();
     let start = 0;
     let end = CHUNK_SIZE;
     let chunkIndex = 0;
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+    totalChunksToSend += totalChunks; // Update the total chunks to send
+
+    // Show progress bar when the transfer starts
+    showProgressBar();
+
+    function updateProgress() {
+        // Calculate total progress across all files
+        const percentage = (totalChunksSent / totalChunksToSend) * 100;
+        updateCombinedProgress(percentage); // Update the shared progress bar
+    }
+
+    function sendChunk() {
+        if (start < file.size) {
+            const chunk = file.slice(start, end);
+            reader.readAsArrayBuffer(chunk);
+        } else {
+            conn.send({ fileIndex: index, chunkIndex: -1, isLastChunk: true });
+            console.log(`Finished sending file: ${file.name}`);
+        }
+    }
 
     reader.onload = (event) => {
         const chunk = event.target.result;
@@ -173,25 +198,65 @@ function sendFileInChunks(file, index) {
                 chunk: chunk,
                 isLastChunk: end >= file.size,
             });
-            console.log(`Sending chunk ${chunkIndex + 1} of ${file.name}`);
+            console.log(`Sent chunk ${chunkIndex + 1} of ${totalChunks} for ${file.name}`);
         }
 
         start = end;
         end = start + CHUNK_SIZE;
+        chunkIndex++;
 
-        if (start < file.size) {
-            chunkIndex++;
-            reader.readAsArrayBuffer(file.slice(start, end));
-        } else {
-            conn.send({ fileIndex: index, chunkIndex: -1, isLastChunk: true });
-            console.log(`Finished sending file: ${file.name}`);
-            statusText.textContent = "All files sent successfully!";
-            hideLoadingIndicator();
-        }
+        totalChunksSent++; // Increment the total chunks sent
+        updateProgress(); // Update the shared progress bar
     };
 
-    reader.readAsArrayBuffer(file.slice(start, end));
+    // Listen for receiver acknowledgment
+    conn.on('data', (data) => {
+        if (data.fileIndex === index && data.chunkIndex === chunkIndex - 1) {
+            sendChunk(); // Send the next chunk upon acknowledgment
+        }
+    });
+
+    // Start sending the first chunk
+    sendChunk();
 }
+
+
+// Function to show the progress bar when the transfer starts
+function showProgressBar() {
+    // Ensure the progress bar container is shown
+    const progressBarContainer = document.getElementById('progress-bar-container');
+    if (progressBarContainer) {
+        progressBarContainer.style.display = 'block';
+    }
+
+    // Initialize the progress bar reference if not already done
+    if (!combinedProgressBar) {
+        combinedProgressBar = document.querySelector('.combined-progress-bar');
+    }
+}
+
+
+
+function updateCombinedProgress(percentage) {
+    if (combinedProgressBar) {
+        combinedProgressBar.style.width = `${percentage}%`;
+    }
+
+    // When the progress reaches 100%, hide the progress bar and show a success message
+    if (percentage >= 100) {
+        // Hide the progress bar
+        document.getElementById('progress-bar-container').style.display = 'none';
+        
+        // Show the "File Sent Successfully" message
+        statusText.textContent = "File sent successfully!";
+        
+        // Optionally, you can reset the progress bar for the next file transfer
+        setTimeout(() => {
+            statusText.textContent = "Sending next file..."; // Or any other message for the next file
+        }, 2000); // Show the success message for 2 seconds
+    }
+}
+
 
 document.querySelector('[data-copy-to-clipboard-target]').addEventListener('click', () => {
     const input = document.getElementById('shareLink'); // The target input field
