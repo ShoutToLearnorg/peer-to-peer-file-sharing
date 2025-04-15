@@ -163,7 +163,7 @@ generateLinkBtn.addEventListener('click', async () => {
 
     socket.on('token-generated', (data) => {
         const token = data.token;
-        const link = `http://localhost:3000/receiver.html?token=${token}`;
+        const link = `https://packetpanda.shouttocode.com/receiver.html?token=${token}`;
         shareLinkInput.value = link;
 
         console.log("Shareable link generated:", link);
