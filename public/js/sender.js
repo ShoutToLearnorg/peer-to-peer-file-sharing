@@ -15,6 +15,7 @@ const shareLinkInput = document.getElementById('shareLink');
 const generateLinkBtn = document.getElementById('generateLinkBtn');
 const loadingSpinner = document.getElementById('loadingSpinner');
 const statusText = document.getElementById('statusText');
+const qrCodeContainer = document.getElementById('qrCodeContainer');
 
 // Initialize Peer Immediately on Load
 window.addEventListener('DOMContentLoaded', () => {
@@ -32,8 +33,16 @@ let combinedProgressBar; // Reference to the combined progress bar
 
 function hideLoadingIndicator() {
     loadingSpinner.style.display = 'none';
-    statusText.textContent = `Your Peer ID: ${peerId}`;
+    statusText.textContent = ''; // Clear the message
+
+    const peerIdDisplay = document.getElementById('peerIdDisplay');
+    const peerIdValue = document.getElementById('peerIdValue');
+
+    peerIdValue.textContent = peerId;
+    peerIdDisplay.classList.remove('hidden');
 }
+
+
 
 function initializePeer() {
     console.log("Initializing PeerJS...");
@@ -48,6 +57,7 @@ function initializePeer() {
 
     peer.on('error', (err) => {
         console.error("PeerJS error:", err);
+        hideLoadingIndicator();
         statusText.textContent = "Error initializing PeerJS. Check the console for details.";
     });
 
@@ -105,7 +115,8 @@ function updateFileList() {
             fileItem.className = "w-full border-b border-stone-300 dark:border-stone-700 last:border-0";
             fileItem.innerHTML = `
                 <div class="flex justify-between items-center py-2 pl-3 pr-2">
-                    <p class="truncate text-sm font-medium text-stone-800 dark:text-stone-200">${file.name}</p>
+                    <p class="truncate text-sm font-medium text-white dark:text-white">${file.name}</p>
+
                     <div class="flex items-center">
                         <div class="px-2 py-1 text-[10px] font-semibold rounded bg-stone-100 dark:bg-stone-900 text-stone-800 dark:text-stone-200 transition-all duration-300">${file.type}</div>
                         <button class="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 focus:outline-none pl-3 pr-1" onclick="removeFile(${index})">✕</button>
@@ -129,6 +140,7 @@ function removeFile(index) {
         fileInputSection.style.display = 'block'; // Show the file input section
         fileListSection.style.display = 'none'; // Hide the file list section
         shareLinkSection.style.display = 'none'; // Hide the share link section
+        qrCodeContainer.style.display = 'none'; // Hide the QR code container
         generateLinkBtn.disabled = true; // Disable the generate link button
     }
 }
@@ -151,15 +163,82 @@ generateLinkBtn.addEventListener('click', async () => {
 
     socket.on('token-generated', (data) => {
         const token = data.token;
-        const link = `https://packetpanda.shouttocode.com/receiver.html?token=${token}`;
+        const link = `http://localhost:3000/receiver.html?token=${token}`;
         shareLinkInput.value = link;
 
         console.log("Shareable link generated:", link);
         statusText.textContent = `Copy and Share with Your Peers!`;
         hideLoadingIndicator();
         shareLinkSection.style.display = 'block'; // Show the shareable link section
+        
+        // Generate QR code with the link
+        generateQRCode(link);
     });
 });
+
+function generateQRCode(link) {
+    // Clear previous QR code if any
+    qrCodeContainer.innerHTML = '';
+    qrCodeContainer.style.display = 'flex';
+    
+    // Create a wrapper div with border for better visibility
+    const qrWrapper = document.createElement('div');
+    qrWrapper.className = 'bg-white p-4 rounded-lg'; // White background with padding
+    qrWrapper.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+    qrWrapper.style.borderRadius = '12px';
+    qrWrapper.style.transition = 'transform 0.3s ease';
+    qrWrapper.style.animation = 'pulse 2s infinite';
+    
+    // Add keyframes for the pulse animation to the document
+    if (!document.getElementById('qrcode-animation')) {
+        const style = document.createElement('style');
+        style.id = 'qrcode-animation';
+        style.textContent = `
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+                70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Create a new QR code with optimized settings
+    const qr = new QRious({
+        element: document.createElement('canvas'),
+        value: link,
+        size: 240, // Increased size for better scanning
+        backgroundAlpha: 1, // Solid background for better contrast
+        background: '#FFFFFF', // White background
+        foreground: '#000000', // Black foreground for maximum contrast
+        level: 'H', // Highest error correction level
+        padding: 12 // Add padding around the QR code
+    });
+    
+    // Add the QR code to the wrapper
+    qrWrapper.appendChild(qr.element);
+    
+    // Add the wrapper to the container
+    qrCodeContainer.appendChild(qrWrapper);
+    
+    // Add a helpful message under the QR code
+    const helpText = document.createElement('p');
+    helpText.className = 'text-sm text-white opacity-80 mt-2';
+    helpText.textContent = 'Scan with any QR code reader';
+    qrCodeContainer.appendChild(helpText);
+    
+    // If link is too long, create a verification button
+    if (link.length > 80) {
+        console.warn('QR Code might be difficult to scan due to complexity. Length:', link.length);
+        const verifyButton = document.createElement('button');
+        verifyButton.className = 'mt-2 text-xs bg-white text-black py-1 px-3 rounded hover:bg-gray-200';
+        verifyButton.textContent = 'Test QR Link';
+        verifyButton.onclick = function() {
+            window.open(link, '_blank');
+        };
+        qrCodeContainer.appendChild(verifyButton);
+    }
+}
 
 function sendFileInChunks(file, index) {
     const reader = new FileReader();
@@ -220,7 +299,6 @@ function sendFileInChunks(file, index) {
     sendChunk();
 }
 
-
 // Function to show the progress bar when the transfer starts
 function showProgressBar() {
     // Ensure the progress bar container is shown
@@ -234,8 +312,6 @@ function showProgressBar() {
         combinedProgressBar = document.querySelector('.combined-progress-bar');
     }
 }
-
-
 
 function updateCombinedProgress(percentage) {
     if (combinedProgressBar) {
@@ -256,7 +332,6 @@ function updateCombinedProgress(percentage) {
         }, 2000); // Show the success message for 2 seconds
     }
 }
-
 
 document.querySelector('[data-copy-to-clipboard-target]').addEventListener('click', () => {
     const input = document.getElementById('shareLink'); // The target input field

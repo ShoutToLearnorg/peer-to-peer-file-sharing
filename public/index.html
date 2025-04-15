@@ -44,6 +44,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
@@ -84,8 +86,7 @@
                 "@type": "DownloadAction",
                 "name": "Download File",
                 "target": "https://PacketPanda.shouttocode.com/receiver.html?file_id={file_id}"
-              },
-              
+              }
             ]
           }
           
@@ -105,102 +106,165 @@
         <img src="https://PacketPanda.shouttocode.com/images/PacketPanda.png" alt="Website Symbol"
             class="w-82 h-82 max-w-[300px] " />
     </div>
-    </div>
 
-    <main class="w-full flex-grow flex justify-center items-center px-4">
-        <div class="max-w-2xl w-full bg-[#232323] p-3 rounded-lg">
-            <div class="text-center">
+    <main class="w-full flex-grow flex justify-center items-center px-4 py-8">
+        <div class="max-w-2xl w-full bg-[#232323] p-6 rounded-lg transition-all duration-300" id="mainContainer">
+            <!-- Header -->
+            <div class="text-center mb-6">
                 <h1 class="text-3xl font-bold text-white">PacketPanda</h1>
-                <p class="text-lg text-white">File Sender</p>
-
-                <!-- File Input Section (Initially visible) -->
-                <div id="fileInputSection" class="mb-8">
-                    <div class="flex items-center justify-center w-full">
-                        <label for="dropzone-file"
-                            class="flex flex-col items-center justify-center w-full h-48 border border-[#333333] rounded-lg cursor-pointer hover:bg-[#2a2a2a] transition-all duration-200">
-                            <div class="flex flex-col items-center justify-center px-4">
-                                <svg class="w-7 h-7 mb-3 text-white opacity-80" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="1"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                </svg>
-                                <p class="text-sm text-white opacity-80 mb-1">Drop files here or click to upload</p>
-                            </div>
-                            <input id="dropzone-file" type="file" class="hidden" multiple />
-                        </label>
+                <p class="text-lg text-white opacity-80">Fast & Secure P2P File Sharing</p>
+                
+            </div>
+            
+            <!-- Dynamic layout container -->
+            <div class="flex flex-col md:flex-row gap-6" id="contentContainer">
+                <!-- Main content area (initially full width) -->
+                <div class="w-full" id="controlsContainer">
+                    <!-- File Input Section -->
+                    <div id="fileInputSection" class="mb-4">
+                        <div class="flex items-center justify-center w-full">
+                            <label for="dropzone-file"
+                                class="flex flex-col items-center justify-center w-full h-48 border border-[#333333] rounded-lg cursor-pointer hover:bg-[#2a2a2a] transition-all duration-200">
+                                <div class="flex flex-col items-center justify-center px-4">
+                                    <svg class="w-7 h-7 mb-3 text-white opacity-80" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="1"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                    </svg>
+                                    <p class="text-sm text-white opacity-80 mb-1">Drop files here or click to upload</p>
+                                </div>
+                                <input id="dropzone-file" type="file" class="hidden" multiple />
+                            </label>
+                        </div>
                     </div>
-                </div>
-
-                <!-- File List Section (Initially hidden) -->
-                <div id="fileListSection" class="w-full bg-[#2a2a2a] rounded-lg mb-6 hidden">
-                    <div class="py-3 px-4">
-                        <p id="fileList"
-                            class="truncate text-sm text-white opacity-70 w-full break-words overflow-hidden"></p>
+    
+                    <!-- File List Section -->
+                    <div id="fileListSection" class="w-full bg-[#2a2a2a] rounded-lg mb-4 hidden">
+                        <div class="py-3 px-4">
+                            <p id="fileList" class="truncate text-sm text-white opacity-70 w-full break-words overflow-hidden"></p>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Generate Link Button (Initially disabled) -->
-                <button id="generateLinkBtn"
-                    class="bg-white text-[#1a1a1a] text-sm py-2 px-6 rounded-lg cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 hidden"
-                    disabled>
-                    Generate Link
-                </button>
-
-
-
-                <!-- Clean Share Link Section -->
-                <div id="shareLinkSection" class="mt-6 hidden">
-                    <div class="relative">
-                        <input id="shareLink" type="text"
-                            class="w-full bg-[#2a2a2a] border border-[#333333] text-white text-sm rounded-lg px-3 py-2.5"
-                            value="" disabled readonly />
-                        <button data-copy-to-clipboard-target="shareLink"
-                            class="absolute end-2.5 top-1/2 -translate-y-1/2 text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-stone-700 rounded-lg py-2 px-2.5 inline-flex items-center justify-center bg-white border-gray-200 border">
-                            <span id="default-message" class="inline-flex items-center text-xs">
-                                <svg class="w-3 h-3 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor" viewBox="0 0 18 20">
-                                    <path
-                                        d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-                                </svg>
-                                <span class="text-xs font-semibold">Copy</span>
-
-                            </span>
-                            <span id="success-message" class="hidden inline-flex items-center">
-                                <svg class="w-3 h-3 text-white-700 dark:text-white-500 me-1.5" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
-                                </svg>
-                                <span class="text-xs font-semibold text-white-700 dark:text-white-500">Copied</span>
+                    
+                    <!-- Generate Link Button -->
+                    <div class="flex justify-center mb-4">
+                        <button id="generateLinkBtn"
+                            class="bg-white text-[#1a1a1a] text-sm py-2 px-6 rounded-lg cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 hidden"
+                            disabled>
+                            Generate Link
                         </button>
                     </div>
-                </div>
+                    
+                    <!-- Loading Spinner & Status Text -->
+                    <div id="loadingSpinner" class="mb-4 text-center hidden">
+                        <div class="inline-block animate-spin rounded-full h-4 w-4 border border-white border-t-transparent opacity-60"></div>
+                    </div>
+                    <div id="statusText" class="mb-4 text-sm text-white opacity-60 text-center"></div>
+                    
+                    <!-- Progress Bar Container -->
+                    <div id="progress-bar-container" style="display: none;" class="mb-4">
+                        <p class="text-sm font-medium text-white opacity-80 mb-2">File Transfer Progress</p>
+                        <div class="relative w-full bg-[#333333] rounded-full h-4">
+                            <div class="absolute top-0 left-0 h-4 bg-white rounded-full combined-progress-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Clean Share Link Section -->
+                    <div id="shareLinkSection" class="mb-4 hidden">
+                        <p class="text-sm text-white opacity-80 mb-2">Share this link with the recipient:</p>
+                        
+                        <div class="flex items-center gap-2">
+                            <textarea id="shareLink"
+    class="w-full bg-[#2a2a2a] border border-[#333333] text-white text-sm rounded-lg px-3 py-2.5 resize-none overflow-auto"
+    rows="2" disabled readonly></textarea>
 
-                <!-- Loading Spinner & Status Text (Initially hidden) -->
-                <div id="loadingSpinner" class="mt-6 hidden">
-                    <div
-                        class="inline-block animate-spin rounded-full h-4 w-4 border border-white border-t-transparent opacity-60">
+                            
+                            <button data-copy-to-clipboard-target="shareLink"
+                                class="text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-stone-700 rounded-lg py-2 px-2.5 inline-flex items-center justify-center bg-white border-gray-200 border">
+                                <span id="default-message" class="inline-flex items-center text-xs">
+                                    <svg class="w-3 h-3 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 18 20">
+                                        <path
+                                            d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
+                                    </svg>
+                                    <span class="text-xs font-semibold">Copy</span>
+                                </span>
+                                <span id="success-message" class="hidden inline-flex items-center">
+                                    <svg class="w-3 h-3 text-white-700 dark:text-white-500 me-1.5" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
+                                    </svg>
+                                    <span class="text-xs font-semibold text-white-700 dark:text-white-500">Copied</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- QR Code container (hidden initially) -->
+                <div class="w-full md:w-1/2 flex items-center justify-center hidden" id="qrCodeWrapper">
+                    <!-- QR Code Container -->
+                    <div id="qrCodeContainer" class="flex flex-col items-center justify-center">
+                        <p class="text-sm text-white opacity-80 mb-4">Scan QR Code to access:</p>
+                        <!-- QR code will be inserted here by JavaScript -->
+                        <div class="bg-white p-3 rounded-lg">
+                            <!-- QR code placeholder - your JS will replace this -->
+                            <div id="qrCode" class="w-48 h-48"></div>
+                        </div>
                     </div>
                 </div>
-                <div id="statusText" class="mt-4 text-sm text-white opacity-60"></div>
-                <!-- progress-bar.html -->
-                <!-- Add this inside your main HTML file where you want the progress bar -->
-                <div id="progress-bar-container" style="display: none;">
-                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">File Transfer Progress</p>
-                    <div class="relative w-full bg-gray-200 rounded-full h-4 dark:bg-stone-700">
-                        <div class="absolute top-0 left-0 h-4 bg-white rounded-full combined-progress-bar"
-                            style="width: 0%;"></div>
-                    </div>
-                </div>
-
-
-
             </div>
+            <!-- Peer ID Display -->
+<div id="peerIdDisplay" class="text-center text-sm text-white opacity-70 mb-4 mt-4 hidden">
+    Your Peer ID: <span id="peerIdValue"></span>
+</div>
 
         </div>
-
     </main>
+    
+    <!-- Add this script to handle dynamic layout changes -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get references to key elements
+        const mainContainer = document.getElementById('mainContainer');
+        const controlsContainer = document.getElementById('controlsContainer');
+        const qrCodeWrapper = document.getElementById('qrCodeWrapper');
+        
+        // Original event listener for your "Generate Link" button
+        // This is just a placeholder - you'll need to integrate with your existing code
+        document.getElementById('generateLinkBtn').addEventListener('click', function() {
+            // Your existing code to generate link
+            
+            // After generating link and QR code:
+            showQRCode();
+        });
+        
+        // Function to show QR code and adjust layout
+        function showQRCode() {
+            // 1. Expand the main container
+            mainContainer.classList.remove('max-w-2xl');
+            mainContainer.classList.add('max-w-4xl');
+            
+            // 2. Adjust the controls container width on desktop
+            controlsContainer.classList.remove('w-full');
+            controlsContainer.classList.add('w-full', 'md:w-1/2');
+            
+            // 3. Show the QR code container
+            qrCodeWrapper.classList.remove('hidden');
+        }
+        
+        // You'll need to call this function when your QR code is ready
+        // For example, in your existing sender.js file
+    });
+    
+    </script>
+    <!-- Peer ID Section -->
+<!-- Peer ID Section -->
+
+
+
 
     <footer class="text-center py-6 mt-8">
         <p class="text-gray-600 text-sm">
