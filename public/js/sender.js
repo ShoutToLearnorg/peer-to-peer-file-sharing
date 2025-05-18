@@ -151,7 +151,6 @@ generateLinkBtn.addEventListener('click', async () => {
         return;
     }
 
-    // Check if Peer ID is available before generating the link
     if (!peerId) {
         alert('Peer ID not generated yet. Please wait...');
         return;
@@ -163,18 +162,28 @@ generateLinkBtn.addEventListener('click', async () => {
 
     socket.on('token-generated', (data) => {
         const token = data.token;
-        const link = `https://packetpanda.shouttocode.com/receiver.html?token=${token}`;
+
+        // Dynamically determine base URL
+        let baseUrl;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            baseUrl = 'http://localhost:3000'; // change if your local server runs on a different port
+        } else {
+            baseUrl = 'https://packetpanda.live/';
+        }
+
+        const link = `${baseUrl}/receiver.html?token=${token}`;
         shareLinkInput.value = link;
 
         console.log("Shareable link generated:", link);
         statusText.textContent = `Copy and Share with Your Peers!`;
         hideLoadingIndicator();
-        shareLinkSection.style.display = 'block'; // Show the shareable link section
-        
-        // Generate QR code with the link
+        shareLinkSection.style.display = 'block';
+
+        // Generate QR code
         generateQRCode(link);
     });
 });
+
 
 function generateQRCode(link) {
     // Clear previous QR code if any
