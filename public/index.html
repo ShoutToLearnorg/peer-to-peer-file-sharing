@@ -93,8 +93,20 @@
     </script>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-        }
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Disable background scroll when modal is open */
+    body.modal-open {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+    }
+
+    /* Optional: hide scrollbar on modal */
+    #infoModal::-webkit-scrollbar {
+      display: none;
+    }
     </style>
 </head>
 
@@ -266,15 +278,108 @@
 
 
 
-    <footer class="text-center py-6 mt-8">
-        <p class="text-gray-600 text-sm">
-            Made with ❤️ by
-            <a href="https://author.shouttocode.com/" target="_blank" class="text-blue-500 font-medium hover:underline">
-                Ashish Srivastava
-            </a>@PacketPanda
-        </p>
-    </footer>
+<footer class="text-center py-6 mt-8 text-sm text-gray-600">
+    <p>
+      Made with ❤️ by
+      <a href="https://author.shouttocode.com/" target="_blank" class="text-blue-500 font-medium hover:underline">
+        Ashish Srivastava
+      </a>
+      @PacketPanda
+    </p>
+    <div class="mt-4 space-x-4 text-black">
+        <button onclick="showModal('Privacy Policy')" class="hover:underline">Privacy Policy</button>
+        <button onclick="showModal('Terms of Service')" class="hover:underline">Terms</button>
+        <button onclick="showModal('Usage Guidelines')" class="hover:underline">Usage Guidelines</button>
+      </div>
+      
+  </footer>
+  
+    
     <script src="/js/sender.js"></script>
+    <!-- Modal Template -->
+<!-- Backdrop -->
+<div id="infoModal"
+    class="fixed inset-0 bg-gray-900/30 backdrop-blur-3xl flex items-center justify-center z-50 hidden transition-all duration-300">
+    <!-- Modal container -->
+    <div
+      class="relative max-w-lg w-full bg-gray-900/95 backdrop-blur-lg rounded-xl p-8 border border-white/10 shadow-2xl shadow-black/30 transform transition-all duration-300 scale-95">
+      <button id="closeModalBtn"
+        class="absolute top-3 right-3 text-white/80 hover:text-red-400 transition-colors hover:scale-110 text-2xl">&times;</button>
+      <h2 id="modalTitle" class="text-black text-2xl font-bold mb-4 tracking-tight"></h2>
+      <div id="modalContent"
+        class="text-gray-200 text-sm leading-relaxed max-h-[70vh] overflow-y-auto space-y-3 pr-4 scrollbar-hide"></div>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("infoModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalContent = document.getElementById("modalContent");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    const modalTexts = {
+  "Privacy Policy": `
+    <ul>
+      <li>We do not store any files on our servers.</li>
+      <li>All transfers are peer-to-peer & encrypted.</li>
+      <li>No personal data or tracking used.</li>
+      <li>Anonymous session connections only.</li>
+    </ul>
+  `,
+  "Terms of Service": `
+    <ul>
+      <li>You agree to use PacketPanda only for lawful purposes.</li>
+      <li>No sharing of copyrighted or illegal content.</li>
+      <li>We are not liable for misuse or data loss.</li>
+    </ul>
+  `,
+  "Usage Guidelines": `
+    <ul>
+      <li>Only share files you have rights to.</li>
+      <li>Files transfer directly between browsers.</li>
+      <li>No storage, logging, or indexing performed.</li>
+      <li>No sharing of harmful or illegal material.</li>
+    </ul>
+    
+  `
+};
+
+    function showModal(title) {
+      modalTitle.innerText = title;
+      modalContent.innerHTML = modalTexts[title];
+      modal.classList.remove("hidden");
+
+      // Save current scroll position
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      document.body.style.top = `-${scrollY}px`;
+      document.body.classList.add("modal-open");
+
+      // Store scroll position for restoring later
+      document.body.dataset.scrollY = scrollY;
+    }
+
+    function closeModal() {
+      modal.classList.add("hidden");
+      document.body.classList.remove("modal-open");
+
+      // Restore scroll position
+      const scrollY = document.body.dataset.scrollY;
+      document.body.style.top = '';
+      window.scrollTo(0, scrollY);
+      delete document.body.dataset.scrollY;
+    }
+
+    closeModalBtn.addEventListener("click", closeModal);
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+  </script>
+  
 </body>
 
 </html>

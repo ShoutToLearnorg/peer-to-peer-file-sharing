@@ -32,3 +32,93 @@ header h1 {
 header p {
     color: #4b5563;
 }
+
+/* Backdrop blur effect */
+/* Backdrop overlay with blue tint and 90% opacity */
+/* Modal backdrop */
+.modal-backdrop-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 255, 0.9); /* Blue with 90% opacity */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999; /* below modal */
+  }
+  
+  /* Modal container */
+  #infoModal > div {
+    position: relative;
+    z-index: 1000; /* above backdrop */
+    border-radius: 1rem;
+    padding: 2rem;
+    background: white; /* white background */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    width: 100%;
+    border: 2px solid black;
+    animation: modalFadeIn 0.3s ease-out;
+    color: black; /* black text */
+  }
+  
+  /* Modal fade-in animation */
+  @keyframes modalFadeIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Modal text styling */
+  #modalContent {
+    font-size: 1.2rem;   /* Increased text size */
+    line-height: 1.6;
+    color: black;
+  }
+  
+  /* Close button */
+  #closeModalBtn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    background: none;
+    border: none;
+    color: black; /* black close button */
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  #closeModalBtn:hover {
+    color: red;
+  }
+  
+  /* Footer buttons */
+  footer button {
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: 1px solid black;
+    color: rgb(131, 127, 127);
+  }
+  footer button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
+  }
+  
+  /* Emoji styled list inside modal */
+  #modalContent ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  #modalContent ul li::before {
+    content: "🐼 "; /* cute panda emoji as bullet */
+    margin-right: 0.5rem;
+  }
+  
